@@ -25,7 +25,7 @@ unordered_set<int> BookInfo::presentInChapters(string word){
 			for(auto adj : book[top]->adjacent){
 				if(visited.count(adj.first) == 0){
 					if(adj.first == word){
-						for(auto s : adj.second) chapters.insert(s);
+						for(auto s : adj.second) chapters.insert(s.first);
 					}
 					stk.push(adj.first);
 				}
@@ -53,7 +53,7 @@ int BookInfo::getChapterQuoteAppears(string sentence){
 	return -1;
 }
 
-/*vector<int> BookInfo::getFrequencyOfWord(string word){
+vector<int> BookInfo::getFrequencyOfWord(string word){
 	vector<int> frequency(totalChapters, 0);
 	
 	unordered_set<string> visited;
@@ -68,8 +68,9 @@ int BookInfo::getChapterQuoteAppears(string sentence){
 			visited.insert(top);
 			for(auto adj : book[top]->adjacent){
 				if(adj.first == word){
-					for(auto s : adj.second) frequency[s-1]++;
+					for(auto s : adj.second) frequency[s.first-1]+=s.second;
 				}
+					
 				if(visited.count(adj.first) == 0){
 					stk.push(adj.first);
 				}
@@ -79,7 +80,7 @@ int BookInfo::getChapterQuoteAppears(string sentence){
 	
 	cout<<"actual: "<<book["it"]->count<<endl;
 	return frequency;
-}*/
+}
 
 string BookInfo::generateSentence(){
 	string sentence = "";

@@ -12,7 +12,7 @@ BookInfo::BookInfo(){
 	}
 	
 	totalNumberOfWords = 0;
-
+	root = new Trie();
     srand((unsigned)time(0));
 	
 	// goes to Chapter 1
@@ -22,10 +22,12 @@ BookInfo::BookInfo(){
 	// starts reading from Chapter 1 until the end of last chapter
 	int chapterNumber = 1;
 	string word, prevWord = "";
+	string remaining = "";
 	while(getline(inFile, line) && line.find("End of the Project Gutenberg EBook of Pride and Prejudice, by Jane Austen") 
 		== string::npos){
 			string cleanLine = Clean(line);
-		
+		    remaining = getCompleteSentence(remaining, line);
+		    
 			// checks if a new chapter has begun
 			if(cleanLine.find("chapter") != string::npos){
 				chapterNumber++;
@@ -50,14 +52,34 @@ BookInfo::BookInfo(){
 			 	}
 			 	
 			 	// sets the adjacenct word
-				book[prevWord]->adjacent[word].insert(chapterNumber);
+				book[prevWord]->adjacent[word][chapterNumber]++;
 				prevWord = word;
-		}
+			}
+			
 		o << endl;
 	}
 	
 	totalChapters = chapterNumber;
 	inFile.close();
+}
+
+string BookInfo::getCompleteSentence(string remaining, string line){
+	line.pop_back();
+	remaining += line + " ";
+	
+	if(line.find(".") == string::npos) return remaining;
+	
+	int pos = remaining.find_first_of(".");
+	int curr = -1;
+	
+	while(pos != string::npos){
+		string completeSentence = remaining.substr(curr+1, pos-curr);
+		curr = pos;
+		pos = remaining.find_first_of(".", pos+1);
+		insert(completeSentence);
+	}
+	remaining = remaining.substr(curr+1);
+	return remaining;
 }
 
 // Clean cleans the given line

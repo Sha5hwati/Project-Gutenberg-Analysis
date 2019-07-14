@@ -3,7 +3,7 @@
 int main(){
 	BookInfo info;
 	//info.PrintBook();
-	int wordsCount = info.getTotalNumberOfWords();
+	/*int wordsCount = info.getTotalNumberOfWords();
 	cout<<"Total number of words: "<<wordsCount<<endl;
 	
 	cout<<endl;
@@ -41,15 +41,21 @@ int main(){
 	present = info.getChapterQuoteAppears("young man of large fortune");
 	cout<<"young man of large fortune: "<<present<<endl;
 	
-	/*vector<int> freq = info.getFrequencyOfWord("it");
+	vector<int> freq = info.getFrequencyOfWord("it");
 	cout<<"it: ";
 	int t = 0;
 	for(auto c : freq) { cout<<c<<' '; t+=c; }
 	cout<<endl;
-	cout<<t<<' '<<endl;*/
+	cout<<t<<' '<<endl;
+	cout<<endl;
+	cout<<info.generateSentence()<<endl;
+	cout<<info.generateSentence()<<endl;
+	cout<<info.generateSentence()<<endl;
+	cout<<info.generateSentence()<<endl;*/
 	
-	cout<<info.generateSentence()<<endl;
-	cout<<info.generateSentence()<<endl;
-	cout<<info.generateSentence()<<endl;
-	cout<<info.generateSentence()<<endl;
+	vector<string> autoComp = info.getAutocompleteSentence(" Mary was obliged to mix more with the world, but she could still moralize over every morning visit;");
+	cout<<"auto-complete: "<<endl;
+	for(auto c : autoComp){
+		cout<<c<<endl;
+	}
 }

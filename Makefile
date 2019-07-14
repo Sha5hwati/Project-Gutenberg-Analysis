@@ -1,6 +1,7 @@
 SOURCE = main.cpp \
          bookInfo.cpp \
          bookInfo_Tree.cpp \
+         bookInfo_Trie.cpp \
 
 OBJS = $(SOURCE:.cpp=.o)
 

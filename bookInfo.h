@@ -21,15 +21,23 @@ using namespace std;
 // and the words adjacent to it
 struct Node {
 	int count;
-	unordered_map<string, unordered_set<int>> adjacent;
+	unordered_map<string, unordered_map<int, int>> adjacent;
 	
 	Node(): count(0) {}
 };
+
+struct Trie {
+	unordered_map<char, Trie*> children;
+	bool endSentence;
+	
+	Trie(): endSentence(false){}
+};	
 
 class BookInfo{
 	private:		
 		//a hash table key: chapter, value:set of nodes of words
 		unordered_map<string, Node*> book;
+		Trie* root;
 				
 		int totalChapters;
 		int totalNumberOfWords;
@@ -38,6 +46,8 @@ class BookInfo{
 		unordered_set<string> getTop100FrequentWords();
 		int getChapterHelper(vector<string> &words, int curr, int chap);
 		unordered_set<int> presentInChapters(string word);
+		void insert(string word);
+		string getCompleteSentence(string remaining, string line);
 
 		
 	public:
@@ -53,4 +63,6 @@ class BookInfo{
 		
 		int getChapterQuoteAppears(string sentence);
 		string generateSentence();
+		
+		vector<string> getAutocompleteSentence(string startOfSentence);
 };
