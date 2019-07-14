@@ -67,7 +67,7 @@ string BookInfo::Clean(string line){
 }
 
 // PrintBook is a debugging function
-// it returns the frequency of words in each chapter
+// it returns the frequency of words in each chapter  
 void BookInfo::PrintBook(){
 	ofstream out("./out");
 	int chapters = book.size();
