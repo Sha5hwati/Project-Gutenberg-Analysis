@@ -7,6 +7,8 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <utility> 
+#include <queue>
 #include <sstream>
 using namespace std;
 
@@ -15,18 +17,24 @@ using namespace std;
 // frequency of the word
 // and the words adjacent to it
 struct Node {
-	string word;
 	int count;
+	unordered_map<int, int> chapterCount;
 	vector<string> adjacent;
 	
-	Node(string w): word(w), count(0) {}
+	Node(): count(0) {}
 };
 
 class BookInfo{
-	private:
+	private:		
 		//a hash table key: chapter, value:set of nodes of words
-		unordered_map<int, unordered_map<string, Node*>> book;
+		unordered_map<string, Node*> book;
+				
+		int totalChapters;
+		int totalNumberOfWords;
+		
 		string Clean(string line);
+		unordered_set<string> getTop100FrequentWords();
+
 		
 	public:
 		BookInfo();
@@ -34,9 +42,9 @@ class BookInfo{
 		
 		int getTotalNumberOfWords();
 		int getTotalUniqueWords();
-		unordered_map<string, int> get20MostFrequentWords();
-		unordered_map<string, int> get20MostInterestingFrequentWords();
-		unordered_map<string, int> get20LeastFrequentWords();
+		vector<pair<string, int>> get20MostFrequentWords();
+		vector<pair<string, int>> get20MostInterestingFrequentWords();
+		vector<pair<string, int>> get20LeastFrequentWords();
 		unordered_map<int, int> getFrequencyOfWord(string word);
 		
 		int getChapterQuoteAppears(string sentence);
