@@ -12,6 +12,8 @@ BookInfo::BookInfo(){
 	}
 	
 	totalNumberOfWords = 0;
+
+    srand((unsigned)time(0));
 	
 	// goes to Chapter 1
 	string line;
@@ -19,6 +21,7 @@ BookInfo::BookInfo(){
 	
 	// starts reading from Chapter 1 until the end of last chapter
 	int chapterNumber = 1;
+	string word, prevWord = "";
 	while(getline(inFile, line) && line.find("End of the Project Gutenberg EBook of Pride and Prejudice, by Jane Austen") 
 		== string::npos){
 			string cleanLine = Clean(line);
@@ -26,12 +29,12 @@ BookInfo::BookInfo(){
 			// checks if a new chapter has begun
 			if(cleanLine.find("chapter") != string::npos){
 				chapterNumber++;
+				prevWord = "";
 				continue;
 			}
 			
 			// constructs the graph for the given chapter
 			stringstream ss(cleanLine);
-			string word, prevWord = "";
 			while(ss >> word){
 				o << word << ' ';
 				if(book.count(word) == 0){
@@ -39,7 +42,6 @@ BookInfo::BookInfo(){
 				} 
 				
 				book[word]->count++;
-				book[word]->chapterCount[chapterNumber]++;
 				totalNumberOfWords++;
 				
 				if(prevWord == ""){
@@ -48,7 +50,7 @@ BookInfo::BookInfo(){
 			 	}
 			 	
 			 	// sets the adjacenct word
-				book[prevWord]->adjacent.push_back(word);
+				book[prevWord]->adjacent[word].insert(chapterNumber);
 				prevWord = word;
 		}
 		o << endl;
@@ -78,7 +80,7 @@ string BookInfo::Clean(string line){
 
 // PrintBook is a debugging function
 // it returns the frequency of words in each chapter  
-void BookInfo::PrintBook(){
+/*void BookInfo::PrintBook(){
 	ofstream out("./out");
 	cout<<"Total chapters: "<<totalChapters<<endl<<endl;
 	
@@ -91,7 +93,7 @@ void BookInfo::PrintBook(){
 	}
 	
 	out.close();
-}
+}*/
 
 // getTotalNumberOfWords returns the total number of words in the book
 int BookInfo::getTotalNumberOfWords(){

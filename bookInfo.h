@@ -9,6 +9,9 @@
 #include <vector>
 #include <utility> 
 #include <queue>
+#include <stdlib.h>
+#include <stack>
+#include <time.h>
 #include <sstream>
 using namespace std;
 
@@ -18,8 +21,7 @@ using namespace std;
 // and the words adjacent to it
 struct Node {
 	int count;
-	unordered_map<int, int> chapterCount;
-	vector<string> adjacent;
+	unordered_map<string, unordered_set<int>> adjacent;
 	
 	Node(): count(0) {}
 };
@@ -34,6 +36,8 @@ class BookInfo{
 		
 		string Clean(string line);
 		unordered_set<string> getTop100FrequentWords();
+		int getChapterHelper(vector<string> &words, int curr, int chap);
+		unordered_set<int> presentInChapters(string word);
 
 		
 	public:
@@ -45,7 +49,7 @@ class BookInfo{
 		vector<pair<string, int>> get20MostFrequentWords();
 		vector<pair<string, int>> get20MostInterestingFrequentWords();
 		vector<pair<string, int>> get20LeastFrequentWords();
-		unordered_map<int, int> getFrequencyOfWord(string word);
+		vector<int> getFrequencyOfWord(string word);
 		
 		int getChapterQuoteAppears(string sentence);
 		string generateSentence();
