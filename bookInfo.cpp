@@ -15,33 +15,34 @@ BookInfo::BookInfo(){
 	
 	// starts reading from Chapter 1 until the end of last chapter
 	int chapter = 1;
-	while(getline(inFile, line) && line.find("End of the Project Gutenberg EBook of Pride and Prejudice, by Jane Austen") == string::npos){
-		string cleanLine = Clean(line);
-	
-		// checks if a new chapter has begun
-		if(cleanLine.find("chapter") != string::npos){
-			chapter++;
-			continue;
-		}
+	while(getline(inFile, line) && line.find("End of the Project Gutenberg EBook of Pride and Prejudice, by Jane Austen") 
+		== string::npos){
+			string cleanLine = Clean(line);
 		
-		// constructs the graph for the given chapter
-		stringstream ss(cleanLine);
-		string word, prevWord = "";
-		while(ss >> word){
-			if(book[chapter].count(word) == 0){
-				book[chapter][word] = new Node(word);
-			} 
-			
-			book[chapter][word]->count++;
-			
-			if(prevWord == ""){
-				prevWord = word;
+			// checks if a new chapter has begun
+			if(cleanLine.find("chapter") != string::npos){
+				chapter++;
 				continue;
-		 	}
-		 	
-		 	// sets the adjacenct word
-			book[chapter][prevWord]->adjacent.push_back(word);
-			prevWord = word;
+			}
+			
+			// constructs the graph for the given chapter
+			stringstream ss(cleanLine);
+			string word, prevWord = "";
+			while(ss >> word){
+				if(book[chapter].count(word) == 0){
+					book[chapter][word] = new Node(word);
+				} 
+				
+				book[chapter][word]->count++;
+				
+				if(prevWord == ""){
+					prevWord = word;
+					continue;
+			 	}
+			 	
+			 	// sets the adjacenct word
+				book[chapter][prevWord]->adjacent.push_back(word);
+				prevWord = word;
 		}
 	}
 	
