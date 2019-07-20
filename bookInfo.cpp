@@ -4,15 +4,15 @@
 // and constructs a graph for each chapter of the book
 BookInfo::BookInfo(){
 	ifstream inFile("./1342.txt");
-	ofstream o("./clean.txt");
 	
-	if(!inFile || !o){
+	if(!inFile){
 		cout<<"Unable to open the file"<<endl;
 		exit(1);
 	}
 	
 	totalNumberOfWords = 0;
-	root = new Trie();
+	totalChapters = 1;
+	root = new TrieNode();
     srand((unsigned)time(0));
 	
 	// goes to Chapter 1
@@ -20,25 +20,23 @@ BookInfo::BookInfo(){
 	while(getline(inFile, line) && line.find("Chapter 1") == string::npos){}
 	
 	// starts reading from Chapter 1 until the end of last chapter
-	int chapterNumber = 1;
 	string word, prevWord = "";
 	string remaining = "";
 	while(getline(inFile, line) && line.find("End of the Project Gutenberg EBook of Pride and Prejudice, by Jane Austen") 
 		== string::npos){
-			string cleanLine = Clean(line);
+			line = clean(line);
 		    remaining = getCompleteSentence(remaining, line);
 		    
 			// checks if a new chapter has begun
-			if(cleanLine.find("chapter") != string::npos){
-				chapterNumber++;
+			if(line.find("chapter") != string::npos){
+				totalChapters++;
 				prevWord = "";
 				continue;
 			}
 			
 			// constructs the graph for the given chapter
-			stringstream ss(cleanLine);
+			stringstream ss(line);
 			while(ss >> word){
-				o << word << ' ';
 				if(book.count(word) == 0){
 					book[word] = new Node();
 				} 
@@ -52,70 +50,19 @@ BookInfo::BookInfo(){
 			 	}
 			 	
 			 	// sets the adjacenct word
-				book[prevWord]->adjacent[word][chapterNumber]++;
+				book[prevWord]->adjacent[word][totalChapters]++;
 				prevWord = word;
 			}
-			
-		o << endl;
 	}
 	
-	totalChapters = chapterNumber;
 	inFile.close();
 }
 
-string BookInfo::getCompleteSentence(string remaining, string line){
-	line.pop_back();
-	remaining += line + " ";
-	
-	if(line.find(".") == string::npos) return remaining;
-	
-	int pos = remaining.find_first_of(".");
-	int curr = -1;
-	
-	while(pos != string::npos){
-		string completeSentence = remaining.substr(curr+1, pos-curr);
-		curr = pos;
-		pos = remaining.find_first_of(".", pos+1);
-		insert(completeSentence);
-	}
-	remaining = remaining.substr(curr+1);
-	return remaining;
+// getTotalChapters returns the total number of chapters excluding
+// introductory and endings sections
+int BookInfo::getTotalChapters(){
+	return totalChapters;
 }
-
-// Clean cleans the given line
-// it converts uppercase characters to lower case
-// sets any kind of space to a single space
-// removes special characters and digits
-string BookInfo::Clean(string line){
-	string clean = "";
-	for (unsigned int i=0; i<line.length(); i++){
-		if(isalpha(line[i])){
-			char c = tolower(line[i]);
-			clean.push_back(c);
-		}
-		if(isspace(line[i])){
-			clean.push_back(' ');
-		}
-	}
-	return clean;
-}
-
-// PrintBook is a debugging function
-// it returns the frequency of words in each chapter  
-/*void BookInfo::PrintBook(){
-	ofstream out("./out");
-	cout<<"Total chapters: "<<totalChapters<<endl<<endl;
-	
-	for(auto word : book){
-		out<<word.first<<' ';
-		unordered_map<int, int> currChapterCount = word.second->chapterCount;
-		for(auto chapter : currChapterCount)
-			out<<chapter.first<< " : "<<chapter.second<<", ";
-		out<<endl;
-	}
-	
-	out.close();
-}*/
 
 // getTotalNumberOfWords returns the total number of words in the book
 int BookInfo::getTotalNumberOfWords(){
@@ -127,16 +74,6 @@ int BookInfo::getTotalNumberOfWords(){
 int BookInfo::getTotalUniqueWords(){
 
 	return book.size();
-}
-
-bool desc_comp(pair<string, int> a, pair<string, int> b){
-	if(a.second >= b.second) return true;
-	return false;
-}
-
-bool asc_comp(pair<string, int> a, pair<string, int> b){
-	if(a.second >= b.second) return false;
-	return true;
 }
 
 // get20MostFrequentWords returns the top 20 most frequent words
@@ -155,25 +92,6 @@ vector<pair<string, int>> BookInfo::get20MostFrequentWords(){
 	heap.pop_back();
 	sort_heap(heap.begin(), heap.end(), desc_comp);
 	return heap;
-}
-
-// getTop100FrequentWords returns the top 100 most frequent words 
-unordered_set<string> BookInfo::getTop100FrequentWords(){
-	unordered_set<string> top100FrequentWords;
-	
-	ifstream inFile("./1-1000.txt");
-	if(!inFile){
-		cout<<"Unable to open the file"<<endl;
-		exit(1);
-	}
-	
-	string word;
-	while(inFile >> word && top100FrequentWords.size() != 100){
-		top100FrequentWords.insert(Clean(word));
-	}
-	
-	inFile.close();
-	return top100FrequentWords;
 }
 
 // get20MostInterestingFrequentWords returns the top 20 most interesting frequent words

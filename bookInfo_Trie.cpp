@@ -1,17 +1,18 @@
 #include "bookInfo.h"
 
+// inserting a sentence into a trie
 void BookInfo::insert(string line){
-	cout<<line<<endl;
-	Trie* curr = root;
+	TrieNode* curr = root;
 	for(int i=0; i<line.length(); i++){
 		if(curr->children.count(line[i]) == 0)
-			curr->children[line[i]] = new Trie();
+			curr->children[line[i]] = new TrieNode();
 		curr = curr->children[line[i]];
 	}
 	curr->endSentence = true;
 }
 
-void autoCompleteHelper(Trie* node, string startOfSentence, vector<string> &ans, string &curr){
+// autoCompleteHelper looks for all possible solutions for a prefix
+void autoCompleteHelper(TrieNode* node, string startOfSentence, vector<string> &ans, string &curr){
 	if(node->endSentence) {
 		ans.push_back(startOfSentence + curr);
 	}
@@ -25,23 +26,21 @@ void autoCompleteHelper(Trie* node, string startOfSentence, vector<string> &ans,
 	}
 }
 
+// autoCompleteSentence checks if the prefix of the word exists
+// if it does it looks for all possible options
 vector<string> BookInfo::getAutocompleteSentence(string startOfSentence){
 	vector<string> ans;
 	string prefix = "";
-	Trie* curr = root;
+	TrieNode* curr = root;
 	
+	startOfSentence = clean(startOfSentence);
 	for(int i=0; i<startOfSentence.length(); i++){
-		cout<<"size: "<<curr->children.size()<<endl;
-		for(auto x : curr->children)
-			cout<<x.first<<' ';
-		cout<<endl;
 		if(curr->children.count(startOfSentence[i]) == 0){
 			cout<<startOfSentence[i]<<endl;
 			return ans;
 		}
 		curr = curr->children[startOfSentence[i]];
 	}
-	cout<<"ok"<<endl;
 	autoCompleteHelper(curr, startOfSentence, ans, prefix);
 	return ans;
 }

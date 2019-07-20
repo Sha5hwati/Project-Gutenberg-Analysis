@@ -26,43 +26,82 @@ struct Node {
 	Node(): count(0) {}
 };
 
-struct Trie {
-	unordered_map<char, Trie*> children;
+// TreeNode defines a node in a trie that
+// stores complete sentences.
+struct TrieNode {
+	unordered_map<char, TrieNode*> children;
 	bool endSentence;
 	
-	Trie(): endSentence(false){}
+	TrieNode(): endSentence(false){}
 };	
 
 class BookInfo{
 	private:		
 		//a hash table key: chapter, value:set of nodes of words
 		unordered_map<string, Node*> book;
-		Trie* root;
+		TrieNode* root;
 				
 		int totalChapters;
 		int totalNumberOfWords;
 		
-		string Clean(string line);
-		unordered_set<string> getTop100FrequentWords();
-		int getChapterHelper(vector<string> &words, int curr, int chap);
-		unordered_set<int> presentInChapters(string word);
-		void insert(string word);
+		// getCompleteSentence finds complete sentences in the text.
 		string getCompleteSentence(string remaining, string line);
 
+		// inserting a sentence into a trie
+		void insert(string line);
+	
+		int getChapterHelper(vector<string> &words, int curr, int chap);
+		
+		// a helper function that returns all the chapters the word is
+		// present in
+		unordered_set<int> presentInChapters(string word);
+	
 		
 	public:
 		BookInfo();
-		void PrintBook();
 		
+		// Total number of chapters
+		int getTotalChapters();
+		
+		// Total number of words in the book
 		int getTotalNumberOfWords();
+		
+		// Total number of unique words in the book
 		int getTotalUniqueWords();
+		
+		// a list of top 20 most frequent words along with
+		// its frequency
 		vector<pair<string, int>> get20MostFrequentWords();
+		
+		// a list of top 20 most interesting frequent words along
+		// with its frequency
 		vector<pair<string, int>> get20MostInterestingFrequentWords();
+		
+		// a list of top 20 least frequent words and its frequency
 		vector<pair<string, int>> get20LeastFrequentWords();
+		
+		// a list of frequency of the word in each chapter
 		vector<int> getFrequencyOfWord(string word);
 		
+		// gets the chapter in which the given quote is present
 		int getChapterQuoteAppears(string sentence);
+		
+		// generates sentences in author's style
 		string generateSentence();
 		
+		// a list of possible sentences with the given prefix
 		vector<string> getAutocompleteSentence(string startOfSentence);
 };
+
+// for results in decreasing order
+bool desc_comp(pair<string, int> a, pair<string, int> b);
+
+// for results in ascending order
+bool asc_comp(pair<string, int> a, pair<string, int> b);
+
+// cleans the given line
+string clean(string line);
+
+// getTop100FrequentWords returns the top 100 most frequent words 
+unordered_set<string> getTop100FrequentWords();
+	

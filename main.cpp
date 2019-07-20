@@ -1,61 +1,88 @@
 #include "bookInfo.h"
 
 int main(){
-	BookInfo info;
-	//info.PrintBook();
-	/*int wordsCount = info.getTotalNumberOfWords();
-	cout<<"Total number of words: "<<wordsCount<<endl;
+	ofstream ofile("analysis.txt");
+	if(!ofile){
+		ofile<<"analysis.pdf did not open"<<endl;
+		return -1;
+	}
 	
-	cout<<endl;
+	BookInfo info;
+	
+	int chapters = info.getTotalChapters();
+	ofile<<"Total number of chapters: "<<chapters<<endl;
+	
+	ofile<<endl;
+	
+	int wordsCount = info.getTotalNumberOfWords();
+	ofile<<"Total number of words: "<<wordsCount<<endl;
+	
+	ofile<<endl;
 	
 	int uniqueWordsCount = info.getTotalUniqueWords();
-	cout<<"Total number of unique words: "<<uniqueWordsCount<<endl;
+	ofile<<"Total number of unique words: "<<uniqueWordsCount<<endl;
 	
-	cout<<endl;
+	ofile<<endl;
 	
 	vector<pair<string, int>> frequentWords = info.get20MostFrequentWords();
-	cout<<"20 Most frequent words: "<<endl;
+	ofile<<"20 Most frequent words: "<<endl;
 	for(int i=0; i<frequentWords.size(); i++){
-		cout<<i+1<<": "<<frequentWords[i].first<<' '<<frequentWords[i].second<<endl;
+		ofile<<i+1<<": "<<frequentWords[i].first<<' '
+			<<frequentWords[i].second<<endl;
 	}
 	
-	cout<<endl;
+	ofile<<endl;
 	
 	vector<pair<string, int>> interestingfrequentWords = info.get20MostInterestingFrequentWords();
-	cout<<"20 Most interesting frequent words: "<<endl;
+	ofile<<"20 Most interesting frequent words: "<<endl;
 	for(int i=0; i<interestingfrequentWords.size(); i++){
-		cout<<i+1<<": "<<interestingfrequentWords[i].first<<' '<<interestingfrequentWords[i].second<<endl;
+		ofile<<i+1<<": "<<interestingfrequentWords[i].first<<' '
+			<<interestingfrequentWords[i].second<<endl;
 	}
 	
-	cout<<endl;
+	ofile<<endl;
 	
 	vector<pair<string, int>> leastfrequentWords = info.get20LeastFrequentWords();
-	cout<<"20 Least frequent words: "<<endl;
+	ofile<<"20 Least frequent words: "<<endl;
 	for(int i=0; i<leastfrequentWords.size(); i++){
-		cout<<i+1<<": "<<leastfrequentWords[i].first<<' '<<leastfrequentWords[i].second<<endl;
+		ofile<<i+1<<": "<<leastfrequentWords[i].first<<' '<<leastfrequentWords[i].second<<endl;
 	}
 	
-	int present = info.getChapterQuoteAppears("In this house they were received by Miss Darcy, who was sitting there with Mrs. Hurst and Miss Bingley, and the lady with whom she lived in London. Georgiana's reception of them was very civil, but attended with all the embarrassment which, though proceeding from shyness and the fear of doing wrong, would easily give to those who felt themselves inferior the belief of her being proud and reserved. Mrs. Gardiner and her niece, however, did her justice, and pitied her.");
-	cout<<"long sentence: "<< present<<endl;
+	ofile<<endl;
 	
-	present = info.getChapterQuoteAppears("young man of large fortune");
-	cout<<"young man of large fortune: "<<present<<endl;
-	
-	vector<int> freq = info.getFrequencyOfWord("it");
-	cout<<"it: ";
-	int t = 0;
-	for(auto c : freq) { cout<<c<<' '; t+=c; }
-	cout<<endl;
-	cout<<t<<' '<<endl;
-	cout<<endl;
-	cout<<info.generateSentence()<<endl;
-	cout<<info.generateSentence()<<endl;
-	cout<<info.generateSentence()<<endl;
-	cout<<info.generateSentence()<<endl;*/
-	
-	vector<string> autoComp = info.getAutocompleteSentence(" Mary was obliged to mix more with the world, but she could still moralize over every morning visit;");
-	cout<<"auto-complete: "<<endl;
-	for(auto c : autoComp){
-		cout<<c<<endl;
+	ofile<<"Find the quote: \n";
+	string quotes[] = {"Angry people are not always wise.", "There is a stubbornness about me that never can bear to be frightened at the will of others. My courage always rises at every attempt to intimidate me", "You are too generous to trifle with me. If your feelings are still what they were last April, tell me so at once. My affections and wishes are unchanged, but one word from you will silence me on this subject for ever.", "Completely and perfectly and incandescently happy", "Find me a sentence that does not exist Jane Austen"};
+	for(int i=0; i<5; i++){
+		int present = info.getChapterQuoteAppears(quotes[i]);
+		ofile<<"\""<<quotes[i]<<"\""<<endl;
+		if(present != -1)
+			ofile<<"Quote found in Chapter "<< present<<endl;
+		else 
+			ofile<<"Quote not found"<<endl;
+		ofile<<endl;
 	}
+	
+	/*string word[] = {"Darcy", "Elizabeth", "Lizzy", "love", "pride", "prejudice"};
+	for(int i=0; i<6; i++){
+		vector<int> freq = info.getFrequencyOfWord(word[i]);
+		ofile<<"The frequency distribution of the word \""<<word[i]<<"\""<<endl;
+		for(auto c : freq) ofile<<c<<' '; 
+		ofile<<endl<<endl;
+	}*/
+	
+	ofile<<"Generating sentences in authors style"<<endl;
+	for(int i=0; i<3; i++){
+		ofile<<info.generateSentence()<<endl<<endl;
+	}
+	
+	string complete[] = {"Laugh as", "I wish, as well as"};
+	for(int i=0; i<2; i++){
+		vector<string> sentences = info.getAutocompleteSentence(complete[i]);
+		ofile<<"auto-complete: \n\""<<complete[i]<<"\"..."<<endl;
+		for(auto sentence : sentences){
+				ofile<<sentence<<endl;
+		}
+	}
+	
+	return 0;
 }
